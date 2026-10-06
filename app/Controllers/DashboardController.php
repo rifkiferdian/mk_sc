@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\UserModel;
 use App\Services\AuthService;
+use App\Services\PermissionService;
 use CodeIgniter\HTTP\RedirectResponse;
 
 class DashboardController extends BaseController
@@ -22,6 +23,7 @@ class DashboardController extends BaseController
         return view('dashboard/index', [
             'user'  => $user,
             'roles' => (new AuthService())->rolesForUser($userId),
+            'showMasterNavigation' => (new PermissionService())->can($userId, 'stores.view'),
         ]);
     }
 }

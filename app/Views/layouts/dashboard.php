@@ -1,4 +1,9 @@
 <!doctype html>
+<?php
+$currentPath = trim(service('uri')->getPath(), '/');
+$isDashboard = $currentPath === 'dashboard';
+$isMasterData = str_starts_with($currentPath, 'master/');
+?>
 <html lang="id">
 <head>
     <meta charset="utf-8">
@@ -17,10 +22,14 @@
                 </span>
             </a>
             <nav class="mt-8">
-                <a href="<?= site_url('dashboard') ?>" class="flex items-center gap-3 rounded-xl bg-orange-50 px-4 py-3 text-sm font-semibold text-orange-700">
+                <a href="<?= site_url('dashboard') ?>" class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition <?= $isDashboard ? 'bg-orange-50 text-orange-700' : 'text-slate-600 hover:bg-orange-50 hover:text-orange-700' ?>">
                     <span aria-hidden="true">▦</span> Dashboard
                 </a>
-                <p class="mt-7 px-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Menu akan hadir</p>
+                <?php if ($showMasterNavigation ?? false): ?>
+                    <a href="<?= site_url('master/stores') ?>" class="mt-2 flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition <?= $isMasterData ? 'bg-orange-50 text-orange-700' : 'text-slate-600 hover:bg-orange-50 hover:text-orange-700' ?>">
+                        <span aria-hidden="true">◫</span> Master Data
+                    </a>
+                <?php endif; ?>
             </nav>
         </aside>
         <main class="min-w-0 flex-1">
@@ -31,8 +40,8 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="hidden text-right sm:block">
-                        <p class="text-sm font-semibold text-slate-700"><?= esc($user['name']) ?></p>
-                        <p class="text-xs text-slate-500"><?= esc($user['username']) ?></p>
+                        <p class="text-sm font-semibold text-slate-700"><?= esc($user['name'] ?? session('auth_user_name')) ?></p>
+                        <p class="text-xs text-slate-500"><?= esc($user['username'] ?? session('auth_username')) ?></p>
                     </div>
                     <form action="<?= site_url('logout') ?>" method="post">
                         <?= csrf_field() ?>

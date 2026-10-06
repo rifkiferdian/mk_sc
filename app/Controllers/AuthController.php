@@ -51,6 +51,7 @@ class AuthController extends BaseController
         $session->set([
             'auth_user_id'   => (int) $user['id'],
             'auth_user_name' => $user['name'],
+            'auth_username'  => $user['username'],
         ]);
         $session->remove('login_attempts');
 
