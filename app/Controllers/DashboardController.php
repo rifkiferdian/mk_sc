@@ -24,6 +24,7 @@ class DashboardController extends BaseController
             'user'  => $user,
             'roles' => (new AuthService())->rolesForUser($userId),
             'showMasterNavigation' => (new PermissionService())->can($userId, 'stores.view'),
+            'showReportsNavigation' => (new PermissionService())->can($userId, 'reports.view_own'),
         ]);
     }
 }

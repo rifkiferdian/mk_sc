@@ -1,8 +1,14 @@
 <!doctype html>
 <?php
+$permissionService = new \App\Services\PermissionService();
+$navigationUserId = (int) session('auth_user_id');
+$canManageMasterData = $navigationUserId > 0 && $permissionService->can($navigationUserId, 'stores.view');
+$canViewReports = $navigationUserId > 0 && $permissionService->can($navigationUserId, 'reports.view_own');
 $currentPath = trim(service('uri')->getPath(), '/');
-$isDashboard = $currentPath === 'dashboard';
-$isMasterData = str_starts_with($currentPath, 'master/');
+$normalizedPath = '/' . $currentPath . '/';
+$isDashboard = str_ends_with(trim($currentPath, '/'), 'dashboard');
+$isMasterData = str_contains($normalizedPath, '/master/');
+$isReports = str_contains($normalizedPath, '/reports/');
 ?>
 <html lang="id">
 <head>
@@ -12,6 +18,14 @@ $isMasterData = str_starts_with($currentPath, 'master/');
     <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
 </head>
 <body class="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased">
+    <style>
+        @media print {
+            body { background: #fff !important; }
+            aside, header, nav[aria-label="Bagian laporan"], button, input[type="radio"], input[type="checkbox"] { display: none !important; }
+            main, main > div { padding: 0 !important; margin: 0 !important; width: 100% !important; }
+            [data-report-panel] { display: block !important; break-inside: avoid; box-shadow: none !important; border-color: #bbb !important; }
+        }
+    </style>
     <div class="min-h-screen lg:flex">
         <aside class="border-b border-orange-100 bg-white px-5 py-5 lg:w-64 lg:border-r lg:border-b-0">
             <a href="<?= site_url('dashboard') ?>" class="flex items-center gap-3 text-slate-900">
@@ -25,10 +39,13 @@ $isMasterData = str_starts_with($currentPath, 'master/');
                 <a href="<?= site_url('dashboard') ?>" class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition <?= $isDashboard ? 'bg-orange-50 text-orange-700' : 'text-slate-600 hover:bg-orange-50 hover:text-orange-700' ?>">
                     <span aria-hidden="true">▦</span> Dashboard
                 </a>
-                <?php if ($showMasterNavigation ?? false): ?>
+                <?php if ($canManageMasterData): ?>
                     <a href="<?= site_url('master/stores') ?>" class="mt-2 flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition <?= $isMasterData ? 'bg-orange-50 text-orange-700' : 'text-slate-600 hover:bg-orange-50 hover:text-orange-700' ?>">
                         <span aria-hidden="true">◫</span> Master Data
                     </a>
+                <?php endif; ?>
+                <?php if ($canViewReports): ?>
+                    <a href="<?= site_url('reports') ?>" class="mt-2 flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition <?= $isReports ? 'bg-orange-50 text-orange-700' : 'text-slate-600 hover:bg-orange-50 hover:text-orange-700' ?>"><span aria-hidden="true">▤</span> Laporan Shift</a>
                 <?php endif; ?>
             </nav>
         </aside>

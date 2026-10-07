@@ -1,2 +1,22 @@
 @import "tailwindcss";
 @source "../../app/Views";
+
+@theme {
+    --color-orange-200: #fed7aa;
+}
+
+.incident-entry input:not([type="checkbox"]),
+.incident-entry select,
+.incident-entry textarea {
+    background-color: #fff;
+}
+
+.signature-pad {
+    display: block;
+    width: 100%;
+    height: 120px;
+    touch-action: none;
+    cursor: crosshair;
+    border-bottom: 1px solid #94a3b8;
+    background-color: #fff;
+}

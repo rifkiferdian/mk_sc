@@ -8,6 +8,14 @@ $routes->get('login', 'AuthController::login');
 $routes->post('login', 'AuthController::attempt');
 $routes->post('logout', 'AuthController::logout', ['filter' => 'auth']);
 $routes->get('dashboard', 'DashboardController::index', ['filter' => 'auth']);
+$routes->get('reports', 'ReportController::index', ['filter' => 'auth']);
+$routes->get('reports/create', 'ReportController::create', ['filter' => 'auth']);
+$routes->post('reports', 'ReportController::store', ['filter' => 'auth']);
+$routes->get('reports/(:num)', 'ReportController::show/$1', ['filter' => 'auth']);
+$routes->post('reports/(:num)/checklists/(:segment)', 'ReportController::saveChecklist/$1/$2', ['filter' => 'auth']);
+$routes->post('reports/(:num)/monitoring', 'ReportController::saveMonitoring/$1', ['filter' => 'auth']);
+$routes->post('reports/(:num)/incidents', 'ReportController::addIncident/$1', ['filter' => 'auth']);
+$routes->post('reports/(:num)/handover', 'ReportController::saveHandover/$1', ['filter' => 'auth']);
 
 $routes->group('master', ['filter' => 'auth'], static function ($routes): void {
     $routes->get('(:segment)', 'MasterDataController::index/$1');
