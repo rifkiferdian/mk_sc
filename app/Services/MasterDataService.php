@@ -83,6 +83,7 @@ class MasterDataService
         $db = db_connect();
 
         return match ($resource) {
+            'incident-types' => $db->table('incident_types')->select('id, code, name, is_active')->orderBy('name')->get()->getResultArray(),
             'areas' => $db->table('areas')->select('areas.*, stores.name AS store_name')->join('stores', 'stores.id = areas.store_id')->orderBy('stores.name')->orderBy('areas.name')->get()->getResultArray(),
             'cameras' => $db->table('cameras')->select('cameras.*, stores.name AS store_name, areas.name AS area_name')->join('stores', 'stores.id = cameras.store_id')->join('areas', 'areas.id = cameras.area_id')->orderBy('stores.name')->orderBy('cameras.code')->get()->getResultArray(),
             'shifts' => $db->table('shift_templates')->select('shift_templates.*, stores.name AS store_name')->join('stores', 'stores.id = shift_templates.store_id')->orderBy('stores.name')->orderBy('shift_templates.start_time')->get()->getResultArray(),
